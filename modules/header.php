@@ -1,24 +1,30 @@
 <?php
 
+use DiscordAuth\Authentication\AccountManager;
+
+$notification = null;
+$_SESSION["notification"] = null;
 if (isset($_POST["create_ticket"])) {
 
-    if (isset($_POST["discordID"]) || isset($_POST["title"]) || isset($_POST["description"])) {
-        $discordID = $_POST["discordID"];
+    if (isset($_POST["title"]) || isset($_POST["description"])) {
         $title = $_POST["title"];
         $description = $_POST["description"];
 
         include_once 'util/database.php';
 
-        getConnection()->query("INSERT INTO `tickets` (`title`, `discordid`, `description`, `active`) VALUES ('$title', '$discordID', '$description', false);");
+        getConnection()->query("INSERT INTO `tickets` (`title`, `discordid`, `description`, `active`) VALUES ('$title', '" . (new AccountManager())->getID() . "', '$description', false);");
 
         $notificationMessage = "Ticket erstellt. Bitte checke deine Discord Nachrichten";
-        header("Location: /?notification=".$notificationMessage);
+        header("Location: /?notification=" . $notificationMessage);
     }
     return;
 }
 
 if (isset($_REQUEST['notification'])) {
     // Send Notification
+    $notification = $_REQUEST['notification'];
+    $_SESSION["notification"] = $notification;
+
 }
 
 function load()
@@ -36,10 +42,16 @@ function load()
                 <li class="nav-item active">
                     <a class="nav-link" href="https://lvckyworld.net">Home</a>
                 </li>
-                <button type="button" class="btn btn-outline-success my-2 my-sm-0" data-bs-toggle="modal"
+
+                <button type="button" class="btn btn-outline-success my-2 my-sm-0 m-4" data-bs-toggle="modal"
                         data-bs-target="#createTicketModal">
                     Ticket erstellen
                 </button>
+
+                <button onclick="window.location.href = '/?action=logout'" type="button" class="btn btn-outline-danger my-2 my-sm-0"">
+                    Ausloggen
+                </button>
+
             </ul>
         </div>
     </nav>
@@ -55,15 +67,18 @@ function load()
                 </div>
                 <form method="POST" action="">
                     <div class="form-floating mb-3">
-                        <input type="number" name="discordID" class="form-control" id="floatingInput" placeholder="447285957004099584">
+                        <input type="number" name="discordID" class="form-control" id="floatingInput"
+                               placeholder="447285957004099584" disabled value="<?php echo (new AccountManager())->getID(); ?>">
                         <label for="floatingInput">Discord-ID</label>
                     </div>
                     <div class="form-floating mb-2">
-                        <input type="text" name="title" class="form-control" id="floatingPassword" placeholder="Anfrage Discord-Bot">
+                        <input type="text" name="title" class="form-control" id="floatingPassword"
+                               placeholder="Anfrage Discord-Bot">
                         <label for="floatingPassword">Titel</label>
                     </div>
                     <div class="form-floating">
-                        <input type="text" name="description" class="form-control" id="floatingPassword" placeholder="Kurze Beschreibung">
+                        <input type="text" name="description" class="form-control" id="floatingPassword"
+                               placeholder="Kurze Beschreibung">
                         <label for="floatingPassword">Kurze Beschreibung</label>
                     </div>
 

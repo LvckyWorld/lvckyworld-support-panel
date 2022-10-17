@@ -3,10 +3,10 @@ try {
 
     function getConnection(): PDO {
 
-        $ip = "localhost";
-        $dbname = "ticketsystem";
-        $username = "root";
-        $password = "12345";
+        $ip = "node03.lvckyworld.net";
+        $dbname = "ticket_support";
+        $username = "ticket_support";
+        $password = "Tgw0o6*44";
 
         $conn = new PDO("mysql:host=$ip;dbname=$dbname", $username, $password);
         // set the PDO error mode to exception
