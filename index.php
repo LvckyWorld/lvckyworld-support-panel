@@ -11,6 +11,10 @@ include_once './modules/header.php';
 include_once 'DiscordAuth/DiscordAuth.php';
 include_once 'DiscordAuth/AccountManager.php';
 
+include_once './util/checkUser.php';
+
+// TODO Fix loading Time 16s
+echo (new LvckyWorldUser())->isLvckyWorldTeamMember();
 
 (new AccountManager())->authenticate();
 
@@ -29,7 +33,6 @@ include_once 'DiscordAuth/AccountManager.php';
 <body style="background-color: #505050">
 <div id="main-content">
     <?php
-
     load();
     ?>
 </div>
